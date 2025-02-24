@@ -1,0 +1,5 @@
+*.docx
+3_Analysis.sql
+dataset/*
+dataloader/.venv
+.idea
