@@ -75,13 +75,13 @@ def clean_air_quality_data():
     return df
 
 
-def import_data_to_mysql(cleaned_data_path, cfg):
+def import_data_to_mysql(cleaned_data_path: str, cfg: dict):
     """
         Импортирует данные из CSV файла в MySQL
 
         Args:
-            cleaned_data_path (str): Путь к очищенному CSV файлу
-            cfg (dict): Конфигурация подключения к MySQL
+            cleaned_data_path: Путь к очищенному CSV файлу
+            cfg: Конфигурация подключения к MySQL
     """
     table_name = cfg['table_name']
     try:
@@ -98,11 +98,10 @@ def import_data_to_mysql(cleaned_data_path, cfg):
         engine_url = f"mysql+mysqlconnector://{cfg['user']}:{cfg['password']}@{cfg['host']}/{cfg['database']}"
         engine = create_engine(engine_url)
 
-        # Читаем CSV файл
         print("Чтение CSV файла...")
         df = pd.read_csv(cleaned_data_path)
 
-        # Загружаем данные чанками для эффективности
+        # Загружаем данные чанками
         chunk_size = 1000
         chunks = list(range(0, len(df), chunk_size))
 
@@ -143,13 +142,9 @@ if __name__ == "__main__":
         'table_name': 'air_quality'
     }
 
-    # Проверяем наличие пароля в .env
     if not mysql_config['password']:
         print("Ошибка: Не найден пароль MySQL в переменных окружения")
         sys.exit(1)
 
-    # Очищаем данные
     clean_air_quality_data()
-
-    # Импортируем в MySQL
-    import_data_to_mysql(CLEANED_DATA, mysql_config)
+    import_data_to_mysql(cleaned_data_path=CLEANED_DATA, cfg=mysql_config)
